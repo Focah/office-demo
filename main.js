@@ -1,0 +1,139 @@
+import './style.css'
+
+import * as THREE from 'three';
+
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
+
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+import { getOutlineEffect, configureOutlineEffectSettings_Default, addOutlinesBasedOnIntersections } from '/helpers/OutlineHelper.js';
+
+
+const FOV = 30;
+//--- Setup Scene and Camera ---
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.querySelector('#bg'),
+    alpha: false,
+    antialias: true,
+});
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+camera.position.set(100, 100, 100);
+renderer.render(scene, camera);
+//---
+//--- Setup lights
+const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+scene.add(ambientLight);
+
+const light = new THREE.DirectionalLight(0xffffff, 4);
+light.position.set(20, 100, 10);
+light.target.position.set(0, 0, 0);
+scene.add(light);
+//---
+//--- Setup Helpers
+// const gridHelper = new THREE.GridHelper(200, 50);
+// const axesHelper = new THREE.AxesHelper(10);
+// scene.add(gridHelper, axesHelper);
+//---
+//--- Post Processing
+const composer = new EffectComposer(renderer);
+
+//Setup renderPass and add it to the composer
+const renderPass = new RenderPass(scene, camera);
+composer.addPass(renderPass);
+
+const outlinePass = getOutlineEffect(window, scene, camera);
+configureOutlineEffectSettings_Default(outlinePass);
+composer.addPass(outlinePass);
+//---
+//--- Setup Camera Controls
+const orbitControls = new OrbitControls(camera, renderer.domElement);
+orbitControls.enablePan = false;
+orbitControls.enableZoom = false; //set to false because i'm using the zoom from trackballControls
+orbitControls.maxPolarAngle = Math.PI / 2;
+
+const trackballControls = new TrackballControls(camera, renderer.domElement);
+trackballControls.noRotate = true;
+trackballControls.noPan = true;
+trackballControls.noZoom = false;
+trackballControls.zoomSpeed = 1;
+//---
+//--- Import 3D Objects
+let object = new THREE.Object3D;
+const loader = new GLTFLoader();
+// loader.load('/isometric_office-gltf/untitled.gltf',
+loader.load('/mod_room.gltf',
+    function (gltf) {
+
+        gltf.scene.scale.set(3, 3, 3);
+        const box = new THREE.Box3().setFromObject(gltf.scene);
+        const c = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        gltf.scene.position.set(-c.x, size.y / 2 - c.y, -c.z);
+
+        gltf.scene.getObjectByName('Cube', true).material.transparent = true;
+        gltf.scene.getObjectByName('Cube', true).material.opacity = 0;
+
+
+        object = gltf.scene;
+        scene.add(object);
+    },
+    function (xhr) {
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded scene');
+    },
+    function (error) {
+        console.error(error);
+    }
+);
+
+//---
+//--- Setup RayCaster for object clicking
+const raycaster = new THREE.Raycaster();
+//---
+//--- Imports HDRI
+// let hdrTexture = new RGBELoader().load('/room.hdr');
+// let skySphereGeometry = new THREE.SphereGeometry(300, 60, 60);
+// let skySphereMaterial = new THREE.MeshPhongMaterial({
+//     map: hdrTexture
+// });
+// skySphereMaterial.side = THREE.BackSide;
+// let skySphereMesh = new THREE.Mesh(skySphereGeometry, skySphereMaterial);
+// scene.add(skySphereMesh);
+//---
+//--- EventListeners
+window.addEventListener("resize", function () {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+document.addEventListener('click', function (event) {
+    const coords = new THREE.Vector2(
+        (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
+        -((event.clientY / renderer.domElement.clientHeight) * 2 - 1)
+    );
+    raycaster.setFromCamera(coords, camera);
+    const intersections = raycaster.intersectObjects(scene.children, true);
+    if (intersections.length > 0) {
+        addOutlinesBasedOnIntersections(intersections, outlinePass);
+    }
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    const target = orbitControls.target;
+
+    orbitControls.update();
+    trackballControls.target.set(target.x, target.y, target.z);
+    trackballControls.update();
+
+    composer.render();
+}
+
+animate();

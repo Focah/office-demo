@@ -24,16 +24,27 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.set(100, 100, 100);
+camera.layers.enable(1);
 renderer.render(scene, camera);
 //---
 //--- Setup lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 2);
+const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 scene.add(ambientLight);
 
-const light = new THREE.DirectionalLight(0xffffff, 4);
-light.position.set(20, 100, 10);
-light.target.position.set(0, 0, 0);
-scene.add(light);
+const lightOne = new THREE.DirectionalLight(0xfffcc1, 2);
+lightOne.position.set(0, 5, -29);
+lightOne.scale.set(4, 1, 1);
+lightOne.target.position.set(0, 0, 0);
+scene.add(lightOne);
+
+const lightTwo = new THREE.DirectionalLight(0xfffcc1, 2);
+lightTwo.position.set(-18, 5, -7);
+lightTwo.scale.set(1, 1, 4);
+lightTwo.target.position.set(0, 0, -7);
+scene.add(lightTwo);
+
+// const directionalLightHelper = new THREE.DirectionalLightHelper(lightTwo, 5);
+// scene.add(directionalLightHelper);
 //---
 //--- Setup Helpers
 // const gridHelper = new THREE.GridHelper(200, 50);
@@ -67,7 +78,9 @@ trackballControls.zoomSpeed = 1;
 let object = new THREE.Object3D;
 const loader = new GLTFLoader();
 // loader.load('/isometric_office-gltf/untitled.gltf',
-loader.load('/mod_room.gltf',
+// loader.load('/mod_room.gltf',
+const rooms = ['Room001', 'Room002', 'BoxScrivania001', 'BoxScrivania002', 'BoxScrivania003', 'BoxScrivania004', 'BoxScrivania005', 'BoxScrivania006', 'BoxScrivania007', 'BoxScrivania008', 'BoxScrivania009', 'BoxScrivania010'];
+loader.load('/nube_office_1.gltf',
     function (gltf) {
 
         gltf.scene.scale.set(3, 3, 3);
@@ -75,10 +88,15 @@ loader.load('/mod_room.gltf',
         const c = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
         gltf.scene.position.set(-c.x, size.y / 2 - c.y, -c.z);
+        console.log(gltf.scene);
 
-        gltf.scene.getObjectByName('Cube', true).material.transparent = true;
-        gltf.scene.getObjectByName('Cube', true).material.opacity = 0;
-
+        rooms.forEach(el => {
+            if (gltf.scene.getObjectByName(el, true) != undefined) {
+                gltf.scene.getObjectByName(el, true).material.transparent = true;
+                gltf.scene.getObjectByName(el, true).material.opacity = 0;
+                gltf.scene.getObjectByName(el, true).layers.set(1);
+            }
+        })
 
         object = gltf.scene;
         scene.add(object);
@@ -94,6 +112,7 @@ loader.load('/mod_room.gltf',
 //---
 //--- Setup RayCaster for object clicking
 const raycaster = new THREE.Raycaster();
+raycaster.layers.set(1);
 //---
 //--- Imports HDRI
 // let hdrTexture = new RGBELoader().load('/room.hdr');

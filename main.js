@@ -18,7 +18,7 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(FOV, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({
     canvas: document.querySelector('#bg'),
-    alpha: false,
+    alpha: true,
     antialias: true,
 });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -77,8 +77,6 @@ trackballControls.zoomSpeed = 1;
 //--- Import 3D Objects
 let object = new THREE.Object3D;
 const loader = new GLTFLoader();
-// loader.load('/isometric_office-gltf/untitled.gltf',
-// loader.load('/mod_room.gltf',
 const rooms = ['Room001', 'Room002', 'BoxScrivania001', 'BoxScrivania002', 'BoxScrivania003', 'BoxScrivania004', 'BoxScrivania005', 'BoxScrivania006', 'BoxScrivania007', 'BoxScrivania008', 'BoxScrivania009', 'BoxScrivania010'];
 loader.load('/nube_office_1.gltf',
     function (gltf) {
@@ -102,7 +100,7 @@ loader.load('/nube_office_1.gltf',
         scene.add(object);
     },
     function (xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded scene');
+        console.log((xhr.loaded / xhr.total * 100).toFixed(2) + '% loaded scene');
     },
     function (error) {
         console.error(error);

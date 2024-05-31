@@ -19,12 +19,14 @@ export function configureOutlineEffectSettings_Default(outlinePass) {
 }
 
 export function addOutlinesBasedOnIntersections(intersections, outlinePass) {
-
-    outlinePass.selectedObjects = [];
-
     if (intersections.length > 0) {
-        let firstObject = intersections[0].object;
+        let clickedObj = intersections[0].object;
 
-        outlinePass.selectedObjects = [firstObject];
+        let indexObj = outlinePass.selectedObjects.indexOf(clickedObj);
+        if (indexObj != -1) {
+            outlinePass.selectedObjects.splice(indexObj, 1);
+        } else {
+            outlinePass.selectedObjects = [clickedObj];
+        }
     }
 }

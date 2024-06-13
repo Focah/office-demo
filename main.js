@@ -47,9 +47,9 @@ scene.add(lightTwo);
 // scene.add(directionalLightHelper);
 //---
 //--- Setup Helpers
-// const gridHelper = new THREE.GridHelper(200, 50);
-// const axesHelper = new THREE.AxesHelper(10);
-// scene.add(gridHelper, axesHelper);
+const gridHelper = new THREE.GridHelper(200, 50);
+const axesHelper = new THREE.AxesHelper(50);
+scene.add(gridHelper, axesHelper);
 //---
 //--- Post Processing
 const composer = new EffectComposer(renderer);
@@ -64,9 +64,11 @@ composer.addPass(outlinePass);
 //---
 //--- Setup Camera Controls
 const orbitControls = new OrbitControls(camera, renderer.domElement);
-orbitControls.enablePan = false;
+orbitControls.enablePan = true;
 orbitControls.enableZoom = false; //set to false because i'm using the zoom from trackballControls
 orbitControls.maxPolarAngle = Math.PI / 2;
+orbitControls.minAzimuthAngle = -Math.PI;
+orbitControls.maxAzimuthAngle = Math.PI;
 
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 trackballControls.noRotate = true;
@@ -86,7 +88,7 @@ loader.load('/nube_office_1.gltf',
         const c = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
         gltf.scene.position.set(-c.x, size.y / 2 - c.y, -c.z);
-        console.log(gltf.scene);
+        // console.log(gltf.scene);
 
         rooms.forEach(el => {
             if (gltf.scene.getObjectByName(el, true) != undefined) {
@@ -130,6 +132,8 @@ window.addEventListener("resize", function () {
 });
 
 document.addEventListener('click', function (event) {
+    let infoPanel = document.querySelector(".info-panel");
+    let infoPanelTitle = document.querySelector(".info-panel-title");
     const coords = new THREE.Vector2(
         (event.clientX / renderer.domElement.clientWidth) * 2 - 1,
         -((event.clientY / renderer.domElement.clientHeight) * 2 - 1)
@@ -138,6 +142,8 @@ document.addEventListener('click', function (event) {
     const intersections = raycaster.intersectObjects(scene.children, true);
     if (intersections.length > 0) {
         addOutlinesBasedOnIntersections(intersections, outlinePass);
+        infoPanel.style.right == '0px' ? infoPanel.style.right = '-33%' : infoPanel.style.right = '0px';
+        infoPanelTitle.innerHTML = intersections[0].object.name;
     }
 });
 
@@ -152,5 +158,9 @@ function animate() {
 
     composer.render();
 }
+
+orbitControls.addEventListener('change', function () {
+    //Do something on camera panning/movement/rotation
+})
 
 animate();

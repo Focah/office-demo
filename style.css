@@ -1,11 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Tiny5&display=swap');
+
 html {
     /*Background Gradient*/
     background-color: #0093E9;
     background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
 }
 
+body {
+    font-family: "Tiny5", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    overflow: hidden;
+}
+
 canvas {
     position: fixed;
     top: 0;
     left: 0;
+}
+
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1.25rem;
+    z-index: 1;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    pointer-events: none;
+    color: white;
+    font-size: large;
+}
+
+.info-panel {
+    opacity: 1;
+    position: absolute;
+    right: -33%;
+    top: 0;
+    width: 33%;
+    max-width: 700px;
+    height: 100vh;
+    background-color: #fff;
+    color: #041676;
+    z-index: 100;
+    transition: all .3s;
+}
+
+.info-panel-content {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+}
+
+.info-panel-title {
+    padding-bottom: 1.25rem;
+}
+
+button {
+    display: inline-block;
+    border: 1px solid #041676;
+    padding: 1rem 2rem;
+    width: 100%;
+    margin: 0;
+    text-decoration: none;
+    background-color: #041676;
+    color: #fff;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background-color: #fff;
+    color: #041676;
+}
+
+@media screen and (max-width: 968px) {
+    .info-panel {
+        right: -100%;
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+
+    /* CSS specific to iOS devices */
+    .info-panel {
+        height: -webkit-fill-available;
+    }
 }

@@ -36,15 +36,17 @@ header {
 .info-panel {
     opacity: 1;
     position: absolute;
-    right: -33%;
+    right: -45%;
     top: 0;
-    width: 33%;
+    width: 45%;
     max-width: 700px;
     height: 100vh;
     background-color: #fff;
     color: #041676;
     z-index: 100;
     transition: all .3s;
+    border-radius: 10px 0 0 10px;
+    overflow: auto;
 }
 
 .info-panel-content {
@@ -52,26 +54,8 @@ header {
 }
 
 .info-panel-title {
-    padding-bottom: 1.25rem;
-}
-
-button {
-    display: inline-block;
-    border: 1px solid #041676;
-    padding: 1rem 2rem;
-    width: 100%;
-    margin: 0;
-    text-decoration: none;
-    background-color: #041676;
-    color: #fff;
-    font-size: 1.125rem;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-button:hover {
-    background-color: #fff;
-    color: #041676;
+    display: flex;
+    justify-content: center;
 }
 
 @media screen and (max-width: 968px) {
@@ -88,4 +72,45 @@ button:hover {
     .info-panel {
         height: -webkit-fill-available;
     }
+}
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    float: left;
+    cursor: pointer;
+    border: 1px solid #041676;
+    padding: 1rem 2rem;
+    width: 100%;
+    margin: 0rem 1rem;
+    text-decoration: none;
+    background-color: #fff;
+    color: #041676;
+    font-size: 1.125rem;
+    transition: all 0.3s;
+    border-radius: 10px;
+}
+
+.tab button:hover {
+    background-color: #e9ebf7;
+    color: #041676;
+}
+
+.tab button.active {
+    background-color: #041676;
+    color: #fff;
+}
+
+/* Style the tab content */
+.tabContent {
+    display: none;
+    border: none;
+    border-top: none;
+    margin: 1rem 1rem;
 }

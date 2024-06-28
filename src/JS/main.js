@@ -1,4 +1,5 @@
-import './style.css'
+import '/src/CSS/style.css'
+import '/src/CSS/cakrro.css'
 
 import * as THREE from 'three';
 
@@ -124,6 +125,12 @@ raycaster.layers.set(1);
 // let skySphereMesh = new THREE.Mesh(skySphereGeometry, skySphereMaterial);
 // scene.add(skySphereMesh);
 //---
+
+let gIsOnDiv = false;
+
+document.querySelector(".info-panel").addEventListener("mouseenter", function () { gIsOnDiv = true });
+document.querySelector(".info-panel").addEventListener("mouseleave", function () { gIsOnDiv = false });
+
 //--- EventListeners
 window.addEventListener("resize", function () {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -140,17 +147,19 @@ document.addEventListener('click', function (event) {
     );
     raycaster.setFromCamera(coords, camera);
     const intersections = raycaster.intersectObjects(scene.children, true);
-    if (intersections.length > 0) {
+    if ((intersections.length > 0) && (!gIsOnDiv)) {
         addOutlinesBasedOnIntersections(intersections, outlinePass);
-        infoPanel.style.right == '0px' ? infoPanel.style.right = '-33%' : infoPanel.style.right = '0px';
+        infoPanel.style.right == '0px' ? infoPanel.style.right = '-45%' : infoPanel.style.right = '0px';
         infoPanelTitle.innerHTML = intersections[0].object.name;
+
+        orbitControls.target.set(intersections[0].object.position.x, intersections[0].object.position.y, intersections[0].object.position.z);
     }
 });
-
+let target;
 function animate() {
     requestAnimationFrame(animate);
 
-    const target = orbitControls.target;
+    target = orbitControls.target;
 
     orbitControls.update();
     trackballControls.target.set(target.x, target.y, target.z);

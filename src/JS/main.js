@@ -3,6 +3,7 @@ import '/src/CSS/cakrro.css'
 import '/src/JS/daypilot/daypilot-init.js'
 
 import * as THREE from 'three';
+import * as TWEEN from "@tweenjs/tween.js";
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
@@ -151,15 +152,17 @@ document.addEventListener('click', function (event) {
     raycaster.setFromCamera(coords, camera);
     const intersections = raycaster.intersectObjects(scene.children, true);
     if ((intersections.length > 0) && (!gIsOnDiv)) {
-        // if (addOutlinesBasedOnIntersections(intersections, outlinePass)) {
-        //     infoPanel.style.right = '-45%'
-        // } else {
-        //     infoPanel.style.right = '0px'
-        // }
-        addOutlinesBasedOnIntersections(intersections, outlinePass) ? infoPanel.style.right = '0px' : infoPanel.style.right = '-45%';
-        infoPanelTitle.innerHTML = intersections[0].object.name;
 
-        orbitControls.target.set(intersections[0].object.position.x, intersections[0].object.position.y, intersections[0].object.position.z);
+        if (addOutlinesBasedOnIntersections(intersections, outlinePass)) {
+            infoPanel.style.right = '0px';
+
+
+            const coords = { x: camera.position.x, y: camera.position.y };
+            console.log(coords);
+        } else {
+            infoPanel.style.right = '-45%';
+        }
+        infoPanelTitle.innerHTML = intersections[0].object.name;
     }
 });
 let target;

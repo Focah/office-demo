@@ -25,7 +25,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.set(100, 100, 100);
+camera.position.set(0, 100, 0);
 camera.layers.enable(1);
 renderer.render(scene, camera);
 //---
@@ -69,8 +69,8 @@ const orbitControls = new OrbitControls(camera, renderer.domElement);
 orbitControls.enablePan = true;
 orbitControls.enableZoom = false; //set to false because i'm using the zoom from trackballControls
 orbitControls.maxPolarAngle = Math.PI / 2;
-orbitControls.minAzimuthAngle = -Math.PI;
-orbitControls.maxAzimuthAngle = Math.PI;
+// orbitControls.minAzimuthAngle = -Math.PI;
+// orbitControls.maxAzimuthAngle = Math.PI;
 
 const trackballControls = new TrackballControls(camera, renderer.domElement);
 trackballControls.noRotate = true;
@@ -85,6 +85,7 @@ const rooms = ['Room001', 'Room002', 'BoxScrivania001', 'BoxScrivania002', 'BoxS
 loader.load('/nube_office_1.gltf',
     function (gltf) {
 
+        gltf.scene.rotation.set(0, Math.PI / 2, 0);
         gltf.scene.scale.set(3, 3, 3);
         const box = new THREE.Box3().setFromObject(gltf.scene);
         const c = box.getCenter(new THREE.Vector3());
@@ -140,6 +141,7 @@ window.addEventListener("resize", function () {
 });
 
 document.addEventListener('click', function (event) {
+    event.stopPropagation();
     let infoPanel = document.querySelector(".info-panel");
     let infoPanelTitle = document.querySelector(".info-panel-title");
     const coords = new THREE.Vector2(
@@ -149,8 +151,12 @@ document.addEventListener('click', function (event) {
     raycaster.setFromCamera(coords, camera);
     const intersections = raycaster.intersectObjects(scene.children, true);
     if ((intersections.length > 0) && (!gIsOnDiv)) {
-        addOutlinesBasedOnIntersections(intersections, outlinePass);
-        infoPanel.style.right == '0px' ? infoPanel.style.right = '-45%' : infoPanel.style.right = '0px';
+        // if (addOutlinesBasedOnIntersections(intersections, outlinePass)) {
+        //     infoPanel.style.right = '-45%'
+        // } else {
+        //     infoPanel.style.right = '0px'
+        // }
+        addOutlinesBasedOnIntersections(intersections, outlinePass) ? infoPanel.style.right = '0px' : infoPanel.style.right = '-45%';
         infoPanelTitle.innerHTML = intersections[0].object.name;
 
         orbitControls.target.set(intersections[0].object.position.x, intersections[0].object.position.y, intersections[0].object.position.z);

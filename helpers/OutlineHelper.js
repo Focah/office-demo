@@ -17,16 +17,21 @@ export function configureOutlineEffectSettings_Default(outlinePass) {
     outlinePass.hiddenEdgeColor.set('#190a05');
 
 }
-
+//Returns true if clicked object is different from previous
 export function addOutlinesBasedOnIntersections(intersections, outlinePass) {
     if (intersections.length > 0) {
         let clickedObj = intersections[0].object;
 
+
         let indexObj = outlinePass.selectedObjects.indexOf(clickedObj);
         if (indexObj != -1) {
+            //Rimuovo l'outline dall'oggetto precedentemente cliccato
             outlinePass.selectedObjects.splice(indexObj, 1);
+            return false;
         } else {
+            //Disegno l'outline sul nuovo oggetto cliccato
             outlinePass.selectedObjects = [clickedObj];
+            return true;
         }
     }
 }

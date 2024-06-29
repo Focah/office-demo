@@ -114,3 +114,23 @@ header {
     border-top: none;
     margin: 1rem 1rem;
 }
+
+.weekRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.customIcon {
+    padding: 1rem;
+}
+
+#dp {
+    overflow: hidden;
+    border: 1px rgb(199, 199, 199) solid;
+    border-radius: 25px;
+}
+
+.cakrro_event_inner {
+    border-radius: 10px;
+}

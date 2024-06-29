@@ -61,7 +61,7 @@ dp.init();
 transformCalendarToBusinessDays();
 
 function transformCalendarToBusinessDays() {
-    document.querySelector(".weekText").innerHTML = dp.startDate.toString("dd/M/yyyy");
+    document.querySelector(".weekText").innerHTML = dp.startDate.toString("dd/M/yyyy") + ' - ' + dp.startDate.addDays(5).toString("dd/M/yyyy");
 
     //Hides saturday and sunday
     document.querySelector("#dp > div:nth-child(1) > table > tbody > tr > td:nth-child(2) > table > tbody > tr > td:nth-child(6)").style.display = "none";

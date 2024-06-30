@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as TWEEN from "@tweenjs/tween.js";
 import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass.js'
 
 export function getOutlineEffect(window, scene, camera) {

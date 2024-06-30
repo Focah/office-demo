@@ -49,7 +49,13 @@ lightTwo.scale.set(1, 1, 4);
 lightTwo.target.position.set(0, 0, -7);
 scene.add(lightTwo);
 
-// const directionalLightHelper = new THREE.DirectionalLightHelper(lightTwo, 5);
+const lightThree = new THREE.DirectionalLight(0xffffff, 3);
+lightThree.position.set(-8, 2, 10);
+lightThree.scale.set(0.4, 0.5, 0.6);
+lightThree.target.position.set(-8, 0, 10);
+scene.add(lightThree)
+
+// const directionalLightHelper = new THREE.DirectionalLightHelper(lightThree, 5);
 // scene.add(directionalLightHelper);
 
 //--- Setup Helpers
